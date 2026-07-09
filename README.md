@@ -1,2 +1,2 @@
 # rentalmanagement
-rental management is an app using to record all the details in line with rental 
+rental management is a web based app used to record all the details in line with rental 
