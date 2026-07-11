@@ -64,3 +64,34 @@ def login_view(request):
             
     return render(request, 'auth/login.html', {'error': error_message})
 
+def register_view(request):
+    """Handle HTML template-based user registration"""
+    error_message = None
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        role = request.POST.get('role')
+        
+        # Validation: Check if username already exists
+        if CustomUser.objects.filter(username=username).exists():
+            error_message = "Username is already taken."
+        else:
+            # Create the user using our custom manager to handle passwords properly
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                role=role
+            )
+            # Log the user in automatically after registration
+            auth_login(request, user)
+            return redirect('/admin/')
+            
+    return render(request, 'auth/register.html', {'error': error_message})
+
