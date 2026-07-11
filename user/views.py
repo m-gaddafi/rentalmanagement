@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from user.models import CustomUser
 from user.serializers import UserSerializer, UserDetailSerializer
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login
 
 class UserViewSet(viewsets.ModelViewSet):
     """ViewSet for CustomUser model"""
@@ -40,4 +42,25 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response({'status': 'password set'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def login_view(request):
+    """Handle HTML template-based user login"""
+    error_message = None
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        # Authenticate against CustomUser model attributes
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            auth_login(request, user)
+            # For now, redirect to the Django Admin dashboard as a placeholder
+            return redirect('/admin/')
+        else:
+            error_message = "Invalid username or password."
+            
+    return render(request, 'auth/login.html', {'error': error_message})
 

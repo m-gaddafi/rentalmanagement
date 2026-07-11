@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenRefreshView
 from user.views import UserViewSet
 from user.auth_views import CustomTokenObtainPairView, register, logout, current_user
+from user.views import login_view
 from properties.views import PropertyViewSet, UnitViewSet
 from tenants.views import TenantViewSet
 from payments.views import PaymentViewSet
@@ -61,13 +62,18 @@ def api_root(request):
     })
 
 urlpatterns = [
+
     path('', api_root, name='api-root'),
+    path('login/', login_view, name='login'),
     path('admin/', admin.site.urls),
-    
     # Authentication endpoints
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', register, name='register'),
+
+    # Template-based Authentication View
+    path('login/', login_view, name='login'),
+    
     path('api/me/', current_user, name='current_user'),
     path('api/logout/', logout, name='logout'),
     
