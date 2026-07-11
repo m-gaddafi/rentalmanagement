@@ -64,3 +64,38 @@ def login_view(request):
             
     return render(request, 'auth/login.html', {'error': error_message})
 
+def register_view(request):
+    """Handle HTML template-based user registration securely"""
+    error_message = None
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        
+        # Security Boundary: Public signups are strictly tenants
+        role = 'tenant'
+        
+        if CustomUser.objects.filter(username=username).exists():
+            error_message = "Username is already taken."
+        elif CustomUser.objects.filter(email=email).exists():
+            error_message = "An account with this email address already exists."
+        else:
+            try:
+                # Use standard user creation manager to hash password safely
+                user = CustomUser.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    role=role
+                )
+                auth_login(request, user)
+                return redirect('/login/') # Redirect to login page upon success
+            except Exception as e:
+                error_message = f"Registration failed: {str(e)}"
+                
+    return render(request, 'auth/register.html', {'error': error_message})
