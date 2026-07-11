@@ -8,11 +8,14 @@ Get started immediately with our [Quick Start Guide](QUICKSTART.md)
 
 ## 📚 Documentation
 
+- **[Quick Start Guide](QUICKSTART.md)** - Get started in 5 minutes
+- **[JWT Authentication](JWT_AUTHENTICATION.md)** - Secure API authentication guide
+- **[Step 2: Testing & Validation](STEP2_TESTING.md)** - Test all API endpoints
 - **[API Guide](API_GUIDE.md)** - Complete API reference and endpoints
-- **[Quick Start](QUICKSTART.md)** - Fast setup and common tasks
 
 ## ✨ Features
 
+- **JWT Authentication** - Secure token-based authentication
 - **Property Management** - Track multiple properties and units
 - **Tenant Management** - Manage leases and tenant information
 - **Payment Tracking** - Record and track rent payments

@@ -19,7 +19,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenRefreshView
 from user.views import UserViewSet
+from user.auth_views import CustomTokenObtainPairView, register, logout, current_user
 from properties.views import PropertyViewSet, UnitViewSet
 from tenants.views import TenantViewSet
 from payments.views import PaymentViewSet
@@ -40,6 +42,13 @@ def api_root(request):
     return Response({
         'message': 'Welcome to Rental Management API',
         'version': '1.0',
+        'auth': {
+            'login': '/api/token/',
+            'refresh': '/api/token/refresh/',
+            'register': '/api/register/',
+            'me': '/api/me/',
+            'logout': '/api/logout/',
+        },
         'endpoints': {
             'users': '/api/users/',
             'properties': '/api/properties/',
@@ -54,6 +63,15 @@ def api_root(request):
 urlpatterns = [
     path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
+    
+    # Authentication endpoints
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', register, name='register'),
+    path('api/me/', current_user, name='current_user'),
+    path('api/logout/', logout, name='logout'),
+    
+    # API endpoints
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
 ]
