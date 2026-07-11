@@ -2,11 +2,15 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+
 from user.models import CustomUser
 from user.serializers import UserSerializer, UserDetailSerializer
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
+
 from django.contrib.auth.decorators import login_required
+from user.decorators import allowed_roles
 
 class UserViewSet(viewsets.ModelViewSet):
     """ViewSet for CustomUser model"""
@@ -45,25 +49,52 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+from django.contrib.auth.decorators import login_required
+from user.decorators import allowed_roles
+
+# --- 1. Centralized Routing Login View ---
 def login_view(request):
-    """Handle HTML template-based user login"""
+    """Handle HTML template-based login and route roles dynamically"""
     error_message = None
-    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        # Authenticate against CustomUser model attributes
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             auth_login(request, user)
-            # For now, redirect to the Django Admin dashboard as a placeholder
-            return redirect('/dashboard/')
+            # Dynamic Role Redirection Boundary
+            if user.role == 'landlord':
+                return redirect('/dashboard/landlord/')
+            elif user.role == 'maintenance':
+                return redirect('/dashboard/maintenance/')
+            else:
+                return redirect('/dashboard/') # Standard Tenant Dashboard
         else:
             error_message = "Invalid username or password."
             
     return render(request, 'auth/login.html', {'error': error_message})
+
+# Tenant Dashboard 
+@login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['tenant', 'admin'])
+def dashboard_view(request):
+    return render(request, 'dashboard.html', {'user': request.user})
+
+# --- 3. Landlord Dashboard ---
+@login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['landlord', 'admin'])
+def landlord_dashboard(request):
+    """Secure portal for landlords managing properties"""
+    return render(request, 'dashboards/landlord.html', {'user': request.user})
+
+# --- 4. Maintenance Staff Dashboard ---
+@login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['maintenance', 'admin'])
+def maintenance_dashboard(request):
+    """Secure portal for repair teams tracking job tickets"""
+    return render(request, 'dashboards/maintenance.html', {'user': request.user})
+
 
 def register_view(request):
     """Handle HTML template-based user registration securely"""
