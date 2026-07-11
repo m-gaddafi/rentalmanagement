@@ -5,13 +5,16 @@
 {% block content %}
 <article style="max-width: 500px; margin: 2rem auto;">
     <h3>Create an Account</h3>
+    <p style="color: #666; font-size: 0.9rem;">Register as a Tenant to manage your rentals.</p>
     
     {% if error %}
-        <p style="color: #c52f24;"><strong>⚠️ {{ error }}</strong></p>
+        <p style="color: #c52f24;"><strong>{{ error }}</strong></p>
     {% endif %}
 
     <form method="POST">
         {% csrf_token %}
+        
+        <!-- Names -->
         <div class="grid">
             <div>
                 <label for="first_name">First Name</label>
@@ -23,18 +26,24 @@
             </div>
         </div>
 
+        <!-- Account Credentials -->
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="johndoe" required>
 
         <label for="email">Email Address</label>
         <input type="email" id="email" name="email" placeholder="john@example.com" required>
 
-        <label for="role">Account Type</label>
-        <select id="role" name="role" required>
-            <option value="tenant" selected>Tenant (Renter)</option>
-            <option value="landlord">Landlord (Property Owner)</option>
-            <option value="maintenance">Maintenance Staff</option>
-        </select>
+        <!-- Model Aligned Fields (Optional but supported by your CustomUser) -->
+        <div class="grid">
+            <div>
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" placeholder="+256...">
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="Kampala">
+            </div>
+        </div>
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password" placeholder="••••••••" required>
