@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rental Management System{% endblock %}</title>
+    <!-- Simple, fast CSS Framework for styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <nav class="container">
+        <ul>
+            <li><strong>🏠 RMS Portal</strong></li>
+        </ul>
+        <ul>
+            {% if user.is_authenticated %}
+                <li>Hello, {{ user.username }} ({{ user.get_role_display }})</li>
+                <li><a href="/admin/">Admin Panel</a></li>
+            {% else %}
+                <li><a href="#">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}
+        <!-- Child templates will inject their content here -->
+        {% endblock %}
+    </main>
+</body>
+</html>
