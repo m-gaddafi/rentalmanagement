@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - RMS{% endblock %}
+
+{% block content %}
+<article style="max-width: 500px; margin: 2rem auto;">
+    <h3>Create an Account</h3>
+    
+    {% if error %}
+        <p style="color: #c52f24;"><strong>⚠️ {{ error }}</strong></p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="grid">
+            <div>
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" placeholder="John" required>
+            </div>
+            <div>
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" placeholder="Doe" required>
+            </div>
+        </div>
+
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="johndoe" required>
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+
+        <label for="role">Account Type</label>
+        <select id="role" name="role" required>
+            <option value="tenant" selected>Tenant (Renter)</option>
+            <option value="landlord">Landlord (Property Owner)</option>
+            <option value="maintenance">Maintenance Staff</option>
+        </select>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+        <button type="submit">Sign Up</button>
+    </form>
+</article>
+{% endblock %}
