@@ -64,7 +64,7 @@ def api_root(request):
 urlpatterns = [
 
     path('', api_root, name='api-root'),
-    path('login/', login_view, name='login'),
+    
     path('admin/', admin.site.urls),
     # Authentication endpoints
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -73,7 +73,7 @@ urlpatterns = [
 
     # Template-based Authentication View
     path('login/', login_view, name='login'),
-    
+
     path('api/me/', current_user, name='current_user'),
     path('api/logout/', logout, name='logout'),
     
