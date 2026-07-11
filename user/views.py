@@ -6,6 +6,7 @@ from user.models import CustomUser
 from user.serializers import UserSerializer, UserDetailSerializer
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
 
 class UserViewSet(viewsets.ModelViewSet):
     """ViewSet for CustomUser model"""
@@ -58,7 +59,7 @@ def login_view(request):
         if user is not None:
             auth_login(request, user)
             # For now, redirect to the Django Admin dashboard as a placeholder
-            return redirect('/admin/')
+            return redirect('/dashboard/')
         else:
             error_message = "Invalid username or password."
             
@@ -97,8 +98,19 @@ def register_view(request):
                     city=city
                 )
                 auth_login(request, user)
-                return redirect('/login/')
+                return redirect('/dashboard/')
             except Exception as e:
                 error_message = f"Registration failed: {str(e)}"
                 
     return render(request, 'auth/register.html', {'error': error_message})
+
+
+
+@login_required(login_url='/login/')
+def dashboard_view(request):
+    """Render the secure landing dashboard for authenticated users"""
+    # Pass the logged-in user profile details cleanly into our layout context
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'dashboard.html', context)

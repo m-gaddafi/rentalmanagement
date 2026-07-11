@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - RMS{% endblock %}
+
+{% block content %}
+<header style="margin-bottom: 2rem; border-bottom: 1px solid #e1e4e6; padding-bottom: 1rem;">
+    <h2>Welcome back, {{ user.first_name }}</h2>
+    <p style="color: #666; margin: 0;">Account Type: <mark><strong>{{ user.get_role_display }}</strong></mark></p>
+</header>
+
+<div class="grid">
+    <!-- Profile Info Card -->
+    <article>
+        <h5>Your Profile Details</h5>
+        <hr>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
+        <p><strong>City:</strong> {{ user.city|default:"Not provided" }}</p>
+    </article>
+
+    <!-- Rental Actions Placeholder Card -->
+    <article>
+        <h5>Rental Center</h5>
+        <hr>
+        <p style="color: #666; font-style: italic;">No active leases linked to this account yet.</p>
+        <button class="secondary" style="width: 100%; margin-top: 1rem;" disabled>View My Lease</button>
+    </article>
+</div>
+{% endblock %}

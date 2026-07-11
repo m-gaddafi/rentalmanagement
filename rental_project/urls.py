@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenRefreshView
 from user.views import UserViewSet
 from user.auth_views import CustomTokenObtainPairView, register, logout, current_user
-from user.views import login_view, register_view as template_register
+from user.views import login_view, register_view as template_register,dashboard_view
 from properties.views import PropertyViewSet, UnitViewSet
 from tenants.views import TenantViewSet
 from payments.views import PaymentViewSet
@@ -74,6 +74,7 @@ urlpatterns = [
     # Template-based Authentication View
     path('login/', login_view, name='login'),
     path('register/', template_register, name='template_register'),
+    path('dashboard/', dashboard_view, name='dashboard'),
 
     path('api/me/', current_user, name='current_user'),
     path('api/logout/', logout, name='logout'),
