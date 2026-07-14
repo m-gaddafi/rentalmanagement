@@ -6,6 +6,24 @@
     <title>{% block title %}Rental Management System{% endblock %}</title>
     <!-- Simple, fast CSS Framework for styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    
+    <!-- Clean message styling to prevent VS Code syntax highlighting errors -->
+    <style>
+        .msg-alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .msg-error {
+            background-color: #fde8e8;
+            color: #c52f24;
+            border: 1px solid #f8b4b4;
+        }
+        .msg-info {
+            background-color: #e1f5fe;
+            color: #0288d1;
+            border: 1px solid #b3e5fc;
+        }
+    </style>
 </head>
 <body>
     <!-- Unified Semantic Navigation -->
@@ -16,8 +34,23 @@
         <ul>
             {% if user.is_authenticated %}
                 <li>Hello, {{ user.username }} ({{ user.get_role_display }})</li>
-                <li><a href="/dashboard/">Dashboard</a></li>
-                <li><a href="/admin/">Admin</a></li>
+                
+                <!-- Dynamic Dashboard Routing based on User Role -->
+                <li>
+                    {% if user.role == 'landlord' %}
+                        <a href="/dashboard/landlord/">Dashboard</a>
+                    {% elif user.role == 'tenant' %}
+                        <a href="/dashboard/tenant/">Dashboard</a>
+                    {% else %}
+                        <a href="/dashboard/">Dashboard</a>
+                    {% endif %}
+                </li>
+
+                <!-- Secure Admin Link (Visible only to staff or superusers) -->
+                {% if user.is_staff or user.is_superuser %}
+                    <li><a href="/admin/">Admin</a></li>
+                {% endif %}
+
                 <li><a href="/logout/" class="secondary">Logout</a></li>
             {% else %}
                 <li><a href="/login/">Login</a></li>
@@ -26,12 +59,10 @@
         </ul>
     </nav>
     <main class="container">
-    <!-- Unified Django Message Alerts (Pico Styled using <article>) -->
+        <!-- Unified Django Message Alerts (Pico Styled using <article> without parser warnings) -->
         {% if messages %}
             {% for message in messages %}
-                <article style="padding: 1rem; margin-bottom: 1rem; 
-                    background-color: {% if message.tags == 'error' %}#fde8e8{% else %}#e1f5fe{% endif %}; 
-                    color: {% if message.tags == 'error' %}#c52f24{% else %}#0288d1{% endif %};">
+                <article class="msg-alert {% if message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
                     {{ message }}
                 </article>
             {% endfor %}
