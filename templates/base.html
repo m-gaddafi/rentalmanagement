@@ -8,21 +8,33 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
+    <!-- Unified Semantic Navigation -->
     <nav class="container">
         <ul>
-            <li><strong>RMS Portal</strong></li>
+            <li><strong><a href="/" style="color: inherit; text-decoration: none;">RMS Portal</a></strong></li>
         </ul>
         <ul>
             {% if user.is_authenticated %}
                 <li>Hello, {{ user.username }} ({{ user.get_role_display }})</li>
-                <li><a href="/admin/">Admin Panel</a></li>
+                <li><a href="/dashboard/">Dashboard</a></li>
+                <li><a href="/admin/">Admin</a></li>
+                <li><a href="/logout/" class="secondary">Logout</a></li>
             {% else %}
-                <li><a href="#">Login</a></li>
+                <li><a href="/login/">Login</a></li>
+                <li><a href="/register/">Register</a></li>
             {% endif %}
         </ul>
     </nav>
-
     <main class="container">
+    <!-- Unified Django Message Alerts (Pico Styled using <article>) -->
+        {% if messages %}
+            {% for message in messages %}
+                <article style="padding: 1rem; margin-bottom: 1rem; background-color: {% if message.tags == 'error' %}#fde8e8{% else %}#e1f5fe{% endif %}; color: {% if message.tags == 'error' %}#c52f24{% else '#0288d1' %}{% endif %};">
+                    {{ message }}
+                </article>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         <!-- Child templates will inject their content here -->
         {% endblock %}
