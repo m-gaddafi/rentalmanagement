@@ -1,60 +1,30 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
 from user.models import CustomUser
-from user.serializers import UserSerializer, UserDetailSerializer
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
-
 from django.contrib.auth.decorators import login_required
 from user.decorators import allowed_roles
 
-class UserViewSet(viewsets.ModelViewSet):
-    """ViewSet for CustomUser model"""
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+# --- Helper Redirection Function ---
+def _route_user_by_role(user):
+    """Inspects the user's database role and routes them accordingly"""
+    if user.role == 'landlord':
+        return redirect('/dashboard/landlord/')
+    elif user.role == 'maintenance':
+        return redirect('/dashboard/maintenance/')
+    else:
+        return redirect('/dashboard/') # Standard Tenant Dashboard
 
-    def get_permissions(self):
-        """Allow any user to create a new account"""
-        if self.action == 'create':
-            permission_classes = [AllowAny]
-        else:
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-
-    def get_serializer_class(self):
-        """Use detailed serializer for retrieve"""
-        if self.action == 'retrieve':
-            return UserDetailSerializer
-        return UserSerializer
-
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
-    def me(self, request):
-        """Get current authenticated user"""
-        serializer = UserDetailSerializer(request.user)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['post'])
-    def set_password(self, request, pk=None):
-        """Change user password"""
-        user = self.get_object()
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'status': 'password set'})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def home_view(request):
+    """Simple landing page"""
+    return render(request, 'home.html')
 
 
-from django.contrib.auth.decorators import login_required
-from user.decorators import allowed_roles
-
-# --- 1. Centralized Routing Login View ---
+# --- 2. Centralized Routing Login View ---
 def login_view(request):
     """Handle HTML template-based login and route roles dynamically"""
+    if request.user.is_authenticated:
+        return _route_user_by_role(request.user)
+
     error_message = None
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -63,43 +33,19 @@ def login_view(request):
         
         if user is not None:
             auth_login(request, user)
-            # Dynamic Role Redirection Boundary
-            if user.role == 'landlord':
-                return redirect('/dashboard/landlord/')
-            elif user.role == 'maintenance':
-                return redirect('/dashboard/maintenance/')
-            else:
-                return redirect('/dashboard/') # Standard Tenant Dashboard
+            return _route_user_by_role(user)
         else:
             error_message = "Invalid username or password."
             
     return render(request, 'auth/login.html', {'error': error_message})
 
-# Tenant Dashboard 
-@login_required(login_url='/login/')
-@allowed_roles(allowed_roles_list=['tenant', 'admin'])
-def dashboard_view(request):
-    return render(request, 'dashboard.html', {'user': request.user})
-
-# --- 3. Landlord Dashboard ---
-@login_required(login_url='/login/')
-@allowed_roles(allowed_roles_list=['landlord', 'admin'])
-def landlord_dashboard(request):
-    """Secure portal for landlords managing properties"""
-    return render(request, 'dashboards/landlord.html', {'user': request.user})
-
-# --- 4. Maintenance Staff Dashboard ---
-@login_required(login_url='/login/')
-@allowed_roles(allowed_roles_list=['maintenance', 'admin'])
-def maintenance_dashboard(request):
-    """Secure portal for repair teams tracking job tickets"""
-    return render(request, 'dashboards/maintenance.html', {'user': request.user})
-
-
+# --- 3. Secure Tenant-Only Public Registration ---
 def register_view(request):
     """Handle HTML template-based user registration securely"""
+    if request.user.is_authenticated:
+        return _route_user_by_role(request.user)
+
     error_message = None
-    
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -135,13 +81,30 @@ def register_view(request):
                 
     return render(request, 'auth/register.html', {'error': error_message})
 
+def logout_view(request):
+    """Log out the user and redirect to login page"""
+    auth_logout(request)
+    return redirect('/login/')
 
-
+# --- 5. Tenant Dashboard ---
 @login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['tenant', 'admin'])
 def dashboard_view(request):
     """Render the secure landing dashboard for authenticated users"""
-    # Pass the logged-in user profile details cleanly into our layout context
-    context = {
-        'user': request.user,
-    }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html', {'user': request.user})
+
+# --- 6. Landlord Dashboard ---
+@login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['landlord', 'admin'])
+def landlord_dashboard(request):
+    """Secure portal for landlords managing properties"""
+    return render(request, 'dashboards/landlord.html', {'user': request.user})
+
+# --- 7. Maintenance Staff Dashboard ---
+@login_required(login_url='/login/')
+@allowed_roles(allowed_roles_list=['maintenance', 'admin'])
+def maintenance_dashboard(request):
+    """Secure portal for repair teams tracking job tickets"""
+    return render(request, 'dashboards/maintenance.html', {'user': request.user})
+
+
