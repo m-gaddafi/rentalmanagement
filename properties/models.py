@@ -8,9 +8,9 @@ class Property(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=10)
-    total_units = models.IntegerField(validators=[MinValueValidator(1)])
+    state = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=10,blank=True, null=True)
+    total_units = models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
     description = models.TextField(blank=True)
     amenities = models.TextField(blank=True, help_text="Comma-separated list of amenities")
     property_type = models.CharField(max_length=50, choices=(
