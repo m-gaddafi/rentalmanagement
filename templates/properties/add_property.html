@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Property - RMS{% endblock %}
+
+{% block content %}
+<article style="max-width: 600px; margin: 2rem auto;">
+    <header>
+        <h3 style="margin: 0;">Add a New Property</h3>
+        <p style="color: var(--muted-color); margin: 0; font-size: 0.9rem;">Register a new building to track tenants and rent.</p>
+    </header>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label for="name">Property Name</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Oakridge Luxury Condos" required>
+
+        <div class="grid">
+            <div>
+                <label for="address">Street Address</label>
+                <input type="text" id="address" name="address" placeholder="e.g. Plot 12, Kampala Road" required>
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="e.g. Kampala" required>
+            </div>
+        </div>
+
+        <label for="description">Brief Description</label>
+        <textarea id="description" name="description" placeholder="Optional details about building amenities, parking, utilities, etc." rows="4"></textarea>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button type="submit" style="flex: 1;">Create Property</button>
+            <a href="/dashboard/landlord/" role="button" class="secondary outline" style="flex: 1; text-align: center;">Cancel</a>
+        </div>
+    </form>
+</article>
+{% endblock %}
