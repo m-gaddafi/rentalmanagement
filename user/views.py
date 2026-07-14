@@ -1,6 +1,6 @@
 from user.models import CustomUser
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from user.decorators import allowed_roles
 
