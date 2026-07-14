@@ -1,55 +1,63 @@
 {% extends 'base.html' %}
 
+{% block title %}Welcome - RMS{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-10">
-        <div class="text-center mb-5">
-            <h1>Rental Management System</h1>
-            <p class="lead">Choose how you want to access the system.</p>
-        </div>
+<section style="text-align: center; margin-bottom: 2rem;">
+    <h2>Rental Management System</h2>
+    <p>Please choose how you want to access the portal.</p>
+</section>
 
-        <div class="row gy-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Tenant</h5>
-                        <p class="card-text">Login to view your rent payments, maintenance requests, and profile details.</p>
-                        <a href="/login/" class="btn btn-primary">Tenant Login</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Landlord</h5>
-                        <p class="card-text">Login to manage properties, tenants, payments, and maintenance requests.</p>
-                        <a href="/login/" class="btn btn-primary">Landlord Login</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Maintenance Staff</h5>
-                        <p class="card-text">Login to view assigned work orders and update maintenance request status.</p>
-                        <a href="/login/" class="btn btn-primary">Maintenance Login</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Admin</h5>
-                        <p class="card-text">Use the admin panel for full system control, user management, and configuration.</p>
-                        <a href="/admin/" class="btn btn-primary">Admin Panel</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Responsive Grid (2 columns on tablet/desktop, 1 on mobile automatically) -->
+<div class="grid">
+    <!-- Tenant Card -->
+    <article style="display: flex; flex-direction: column; justify-content: space-between;">
+        <header>
+            <h5 style="margin-bottom: 0;">Tenant Portal</h5>
+        </header>
+        <p>View your active rent payments, submit maintenance requests, and manage your renter profile details.</p>
+        <footer>
+            <a href="/login/" role="button" class="contrast">Tenant Login</a>
+        </footer>
+    </article>
 
-        <div class="mt-5 text-center">
-            <p>If you do not yet have an account, <a href="/register/">register here</a>.</p>
-        </div>
-    </div>
+    <!-- Landlord Card -->
+    <article style="display: flex; flex-direction: column; justify-content: space-between;">
+        <header>
+            <h5 style="margin-bottom: 0;">Landlord Portal</h5>
+        </header>
+        <p>Track rent collection, manage properties, review applicants, and assign maintenance tickets.</p>
+        <footer>
+            <a href="/login/" role="button">Landlord Login</a>
+        </footer>
+    </article>
 </div>
+
+<div class="grid">
+    <!-- Maintenance Staff Card -->
+    <article style="display: flex; flex-direction: column; justify-content: space-between;">
+        <header>
+            <h5 style="margin-bottom: 0;">Maintenance Portal</h5>
+        </header>
+        <p>View assigned repair orders, update job status in real-time, and coordinate with landlords.</p>
+        <footer>
+            <a href="/login/" role="button" class="secondary">Staff Login</a>
+        </footer>
+    </article>
+
+    <!-- Admin Card -->
+    <article style="display: flex; flex-direction: column; justify-content: space-between;">
+        <header>
+            <h5 style="margin-bottom: 0;">System Admin</h5>
+        </header>
+        <p>Access full configuration panels, run system diagnostics, and manage system-wide user credentials.</p>
+        <footer>
+            <a href="/admin/" role="button" class="outline">Admin Panel</a>
+        </footer>
+    </article>
+</div>
+
+<section style="text-align: center; margin-top: 2rem;">
+    <p>New to our platform? <a href="/register/">Register a tenant account here</a>.</p>
+</section>
 {% endblock %}
