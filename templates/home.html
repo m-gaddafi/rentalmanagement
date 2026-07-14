@@ -3,16 +3,96 @@
 {% block title %}Welcome - RMS{% endblock %}
 
 {% block content %}
-<article style="max-width: 600px; margin: 3rem auto; text-align: center;">
-    <header>
-        <h2>Rental Management System</h2>
-    </header>
-    
-    <p>Welcome to the RMS Portal. Please sign in to access your dashboard, manage payments, or track maintenance requests.</p>
-    
-    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
-        <a href="/login/" role="button" style="flex: 1;">Sign In</a>
-        <a href="/register/" role="button" class="outline" style="flex: 1;">Create Tenant Account</a>
+<!-- Hero Section -->
+<header style="text-align: center; padding: 3rem 1rem; background-color: var(--card-background-color); border-radius: var(--border-radius); margin-bottom: 3rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Find Your Dream Rental Apartment</h1>
+    <p style="font-size: 1.2rem; color: var(--muted-color); max-width: 600px; margin: 0 auto 2rem;">
+        Discover handpicked premium estates, luxury condos, and cozy family rentals. Managed seamlessly, all in one portal.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/register/" role="button" style="padding: 0.75rem 2rem;">Browse & Register as Tenant</a>
+        <a href="/login/" role="button" class="outline" style="padding: 0.75rem 2rem;">Portal Sign In</a>
     </div>
+</header>
+
+<!-- Value Props / Why Choose Us -->
+<section style="margin-bottom: 3rem;">
+    <h3 style="text-align: center; margin-bottom: 2rem;">Why Renters Trust RMS</h3>
+    <div class="grid">
+        <div style="text-align: center; padding: 1rem;">
+            <span style="font-size: 2.5rem;">🛡️</span>
+            <h4 style="margin-top: 0.5rem; font-size: 1.1rem;">Verified Properties</h4>
+            <p style="font-size: 0.9rem; color: var(--muted-color);">Every single listing is thoroughly inspected and verified for your peace of mind.</p>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <span style="font-size: 2.5rem;">💳</span>
+            <h4 style="margin-top: 0.5rem; font-size: 1.1rem;">Seamless Payments</h4>
+            <p style="font-size: 0.9rem; color: var(--muted-color);">Pay rent, view transaction history, and receive digital receipts securely online.</p>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <span style="font-size: 2.5rem;">🔧</span>
+            <h4 style="margin-top: 0.5rem; font-size: 1.1rem;">24/7 Maintenance</h4>
+            <p style="font-size: 0.9rem; color: var(--muted-color);">Submit repair requests in seconds and track updates directly from your dashboard.</p>
+        </div>
+    </div>
+</section>
+
+<hr style="margin-bottom: 3rem;" />
+
+<!-- Featured Rentals Section -->
+<section style="margin-bottom: 3rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="margin: 0;">Featured Estates</h3>
+        <a href="/register/" style="font-size: 0.9rem;">View All Available Units →</a>
+    </div>
+    
+    <div class="grid">
+        <!-- Card 1 -->
+        <article style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80" alt="Modern Apartment" style="width: 100%; height: 200px; object-fit: cover;" />
+            <div style="padding: 1rem;">
+                <h5 style="margin-bottom: 0.25rem;">The Horizon Heights</h5>
+                <p style="font-size: 0.85rem; color: var(--muted-color); margin-bottom: 1rem;">2 Bed • 2 Bath • Central Kampala</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="color: var(--primary);">$1,200/mo</strong>
+                    <a href="/register/" role="button" class="secondary outline" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">Apply Now</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="Luxury Villa" style="width: 100%; height: 200px; object-fit: cover;" />
+            <div style="padding: 1rem;">
+                <h5 style="margin-bottom: 0.25rem;">Oakridge Villa Estate</h5>
+                <p style="font-size: 0.85rem; color: var(--muted-color); margin-bottom: 1rem;">4 Bed • 3.5 Bath • Suburban Oasis</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="color: var(--primary);">$2,500/mo</strong>
+                    <a href="/register/" role="button" class="secondary outline" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">Apply Now</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80" alt="Cozy Studio" style="width: 100%; height: 200px; object-fit: cover;" />
+            <div style="padding: 1rem;">
+                <h5 style="margin-bottom: 0.25rem;">Urban Loft & Studio</h5>
+                <p style="font-size: 0.85rem; color: var(--muted-color); margin-bottom: 1rem;">1 Bed • 1 Bath • Downtown Core</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="color: var(--primary);">$850/mo</strong>
+                    <a href="/register/" role="button" class="secondary outline" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">Apply Now</a>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+
+<!-- Bottom CTA -->
+<article style="text-align: center; padding: 2rem; margin-top: 4rem; background: linear-gradient(135deg, rgba(16, 149, 193, 0.1) 0%, rgba(0, 0, 0, 0) 100%);">
+    <h3>Ready to secure your new keys?</h3>
+    <p style="margin-bottom: 1.5rem;">Create a tenant account today to apply for properties, talk to landlords, and lease online.</p>
+    <a href="/register/" role="button">Get Started Now</a>
 </article>
 {% endblock %}
