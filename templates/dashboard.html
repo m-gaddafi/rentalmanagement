@@ -13,7 +13,6 @@
 
 {% if lease %}
     <!-- ==================== STATE A: USER HAS AN ACTIVE LEASE ==================== -->
-    <!-- Quick Action Overview Grid -->
     <div class="grid" style="margin-bottom: 2rem;">
         <article style="border-left: 5px solid #2ecc71; padding: 1.5rem;">
             <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Rent Status</h6>
@@ -34,10 +33,8 @@
         </article>
     </div>
 
-    <!-- Main Body Grid -->
     <div class="grid" style="align-items: start;">
         <div style="display: flex; flex-direction: column; gap: 2rem;">
-            <!-- Rent & Payment Center -->
             <article>
                 <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h5 style="margin: 0;">Rent &amp; Payments</h5>
@@ -70,7 +67,6 @@
                 {% endif %}
             </article>
 
-            <!-- Maintenance Request Log -->
             <article>
                 <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h5 style="margin: 0;">Maintenance Issues</h5>
@@ -96,7 +92,6 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 2rem;">
-            <!-- Rental Lease Summary Card -->
             <article>
                 <h5>Lease Agreement Details</h5>
                 <hr>
@@ -111,41 +106,73 @@
 
 {% else %}
     <!-- ==================== STATE B: NEW REGISTERED USER (NO LEASE) ==================== -->
-    <div style="max-width: 800px; margin: 0 auto;">
-        <article style="text-align: center; padding: 3rem 1.5rem;">
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem;">
+        
+        <!-- Welcome Jumbotron -->
+        <article style="text-align: center; padding: 3rem 1.5rem; margin-bottom: 0;">
             <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔑</div>
             <h3>Your Renter Portal is Active!</h3>
             <p style="color: var(--muted-color); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem;">
-                You have successfully registered your tenant account. Once the landlord assigns you to an apartment unit, your lease details, rent bills, and maintenance options will appear here automatically.
+                You have successfully registered your tenant account. Welcome! Browse our active rental opportunities below to find and apply for your new home.
             </p>
             
             <div style="border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 2rem;">
-                <h5>Next Steps to Get Started</h5>
+                <h5>How to Secure Your Apartment</h5>
                 <div class="grid" style="margin-top: 1.5rem; text-align: left;">
                     <div>
-                        <h6>1. Find an Apartment</h6>
-                        <p style="font-size: 0.9rem; color: var(--muted-color);">Browse our open rentals page to find an available unit that matches your needs.</p>
+                        <h6>1. Browse Listings</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Review available properties below or visit our dedicated search directory.</p>
                     </div>
                     <div>
-                        <h6>2. Apply Online</h6>
-                        <p style="font-size: 0.9rem; color: var(--muted-color);">Once you submit an application, our team will process your details and generate your lease.</p>
+                        <h6>2. Apply Securely</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Send an application instantly. Our leasing agents will process your request.</p>
                     </div>
                     <div>
-                        <h6>3. Keys &amp; Move In</h6>
-                        <p style="font-size: 0.9rem; color: var(--muted-color);">Sign your contract digitally right here to unlock your payment ledger and maintenance tools.</p>
+                        <h6>3. Sign & Move In</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Sign your lease agreement online to unlock payment options and maintenance forms.</p>
                     </div>
                 </div>
             </div>
-            
-            <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: center;">
-                <a href="/" role="button">Browse Available Units</a>
-                <a href="mailto:leasing@example.com" role="button" class="secondary outline">Contact Leasing Office</a>
-            </div>
         </article>
 
-        <!-- Keep basic profile info visible so they can confirm details are correct -->
-        <article>
-            <h5 style="margin-bottom: 1rem;">Your Account Details</h5>
+        <!-- Dynamic Available Properties Stream -->
+        <section style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0;">🏠 Featured Available Properties</h4>
+                <a href="/properties/" class="secondary" style="font-size: 0.9rem; text-decoration: none;">View All Listings →</a>
+            </div>
+            
+            {% if available_properties %}
+                <div class="grid" style="align-items: stretch; gap: 1.5rem;">
+                    {% for property in available_properties %}
+                        <article style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--border-color);">
+                            <div>
+                                <h5 style="margin-bottom: 0.5rem; color: var(--primary);">{{ property.name }}</h5>
+                                <p style="font-size: 0.9rem; color: var(--muted-color); margin-bottom: 1rem;">📍 {{ property.address }}, {{ property.city }}</p>
+                                {% if property.description %}
+                                    <p style="font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.25rem;">{{ property.description|truncatewords:20 }}</p>
+                                {% endif %}
+                            </div>
+                            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+                                <span style="font-size: 0.85rem;">Total Units: <strong>{{ property.total_units|default:"1" }}</strong></span>
+                                <a href="{% url 'add_property' %}" role="button" class="outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; margin-bottom: 0;">Apply Now</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <article style="text-align: center; padding: 2.5rem; border: 2px dashed var(--border-color); background: transparent;">
+                    <p style="color: var(--muted-color); font-style: italic; margin-bottom: 1rem;">
+                        No properties are currently flagged as available online.
+                    </p>
+                    <a href="mailto:leasing@example.com" role="button" class="secondary outline" style="font-size: 0.85rem; padding: 0.5rem 1.25rem;">Contact Leasing Office</a>
+                </article>
+            {% endif %}
+        </section>
+
+        <!-- Account Verification Card -->
+        <article style="margin-top: 0;">
+            <h5 style="margin-bottom: 1rem;">Your Verified Profile Details</h5>
             <div class="grid" style="font-size: 0.95rem;">
                 <div>
                     <p><strong>Username:</strong> {{ user.username }}</p>

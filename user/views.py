@@ -2,6 +2,7 @@ from user.models import CustomUser
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from properties.models import Property
 from user.decorators import allowed_roles
 
 # --- Helper Redirection Function ---
@@ -86,12 +87,30 @@ def logout_view(request):
     auth_logout(request)
     return redirect('/login/')
 
-# --- 5. Tenant Dashboard ---
 @login_required(login_url='/login/')
 @allowed_roles(allowed_roles_list=['tenant', 'admin'])
 def dashboard_view(request):
     """Render the secure landing dashboard for authenticated users"""
-    return render(request, 'dashboard.html', {'user': request.user})
+    user = request.user
+    context = {'user': user}
+    
+    # 1. Check for an active lease associated with this tenant
+    # (Adjust this query to match your actual schema, e.g., Lease.objects.filter(tenant=user, is_active=True).first())
+    lease = getattr(user, 'active_lease', None) 
+    
+    if lease:
+        # === STATE A: Fetch active lease details ===
+        context['lease'] = lease
+        # context['payments'] = Payment.objects.filter(lease=lease).order_by('-date')[:5]
+        # context['maintenance_requests'] = MaintenanceRequest.objects.filter(tenant=user).order_by('-date_submitted')[:5]
+        # context['active_requests_count'] = context['maintenance_requests'].filter(status='pending').count()
+    else:
+        # === STATE B: Fetch available properties for the lease-less tenant ===
+        # Adjust the filter based on how you track vacancy (e.g., is_available=True or total_units__gt=0)
+        context['lease'] = None
+        context['available_properties'] = Property.objects.all()[:6] 
+
+    return render(request, 'dashboard.html', context)
 
 # --- 6. Landlord Dashboard ---
 @login_required(login_url='/login/')
