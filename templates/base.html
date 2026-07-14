@@ -29,7 +29,9 @@
     <!-- Unified Django Message Alerts (Pico Styled using <article>) -->
         {% if messages %}
             {% for message in messages %}
-                <article style="padding: 1rem; margin-bottom: 1rem; background-color: {% if message.tags == 'error' %}#fde8e8{% else %}#e1f5fe{% endif %}; color: {% if message.tags == 'error' %}#c52f24{% else '#0288d1' %}{% endif %};">
+                <article style="padding: 1rem; margin-bottom: 1rem; 
+                    background-color: {% if message.tags == 'error' %}#fde8e8{% else %}#e1f5fe{% endif %}; 
+                    color: {% if message.tags == 'error' %}#c52f24{% else %}#0288d1{% endif %};">
                     {{ message }}
                 </article>
             {% endfor %}
