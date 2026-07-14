@@ -3,28 +3,160 @@
 {% block title %}Dashboard - RMS{% endblock %}
 
 {% block content %}
-<header style="margin-bottom: 2rem; border-bottom: 1px solid #e1e4e6; padding-bottom: 1rem;">
-    <h2>Welcome back, {{ user.first_name }}</h2>
-    <p style="color: #666; margin: 0;">Account Type: <mark><strong>{{ user.get_role_display }}</strong></mark></p>
+<!-- Dashboard Header -->
+<header style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2 style="margin: 0;">Welcome back, {{ user.first_name }}! 👋</h2>
+        <p style="color: var(--muted-color); margin: 0;">Account Type: <strong>Tenant Portal</strong></p>
+    </div>
 </header>
 
-<div class="grid">
-    <!-- Profile Info Card -->
-    <article>
-        <h5>Your Profile Details</h5>
-        <hr>
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
-        <p><strong>City:</strong> {{ user.city|default:"Not provided" }}</p>
-    </article>
+{% if lease %}
+    <!-- ==================== STATE A: USER HAS AN ACTIVE LEASE ==================== -->
+    <!-- Quick Action Overview Grid -->
+    <div class="grid" style="margin-bottom: 2rem;">
+        <article style="border-left: 5px solid #2ecc71; padding: 1.5rem;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Rent Status</h6>
+            <h3 style="margin: 0;">{{ rent_status|default:"Paid" }}</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">Next payment due: <strong>{{ next_due_date|default:"August 1st" }}</strong></p>
+        </article>
 
-    <!-- Rental Actions Placeholder Card -->
-    <article>
-        <h5>Rental Center</h5>
-        <hr>
-        <p style="color: #666; font-style: italic;">No active leases linked to this account yet.</p>
-        <button class="secondary" style="width: 100%; margin-top: 1rem;" disabled>View My Lease</button>
-    </article>
-</div>
+        <article style="border-left: 5px solid var(--primary); padding: 1.5rem;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Active Lease</h6>
+            <h3 style="margin: 0;">Unit {{ lease.unit_number }}</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">Property: <strong>{{ lease.property_name }}</strong></p>
+        </article>
+
+        <article style="border-left: 5px solid #f1c40f; padding: 1.5rem;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Maintenance</h6>
+            <h3 style="margin: 0;">{{ active_requests_count|default:"0" }} Active</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">Track issues directly online.</p>
+        </article>
+    </div>
+
+    <!-- Main Body Grid -->
+    <div class="grid" style="align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- Rent & Payment Center -->
+            <article>
+                <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h5 style="margin: 0;">Rent &amp; Payments</h5>
+                    <a href="#" role="button" class="outline" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">Make Payment</a>
+                </header>
+                
+                {% if payments %}
+                    <table class="striped" style="font-size: 0.9rem;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.date }}</td>
+                                <td>{{ payment.reference }}</td>
+                                <td>${{ payment.amount }}</td>
+                                <td><ins style="color: #2ecc71; text-decoration: none;">✔ {{ payment.status }}</ins></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p style="color: var(--muted-color); font-style: italic; font-size: 0.9rem; text-align: center; margin: 1rem 0;">No payment history found for this lease.</p>
+                {% endif %}
+            </article>
+
+            <!-- Maintenance Request Log -->
+            <article>
+                <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h5 style="margin: 0;">Maintenance Issues</h5>
+                    <a href="#" role="button" class="secondary" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">+ New Request</a>
+                </header>
+                
+                {% if maintenance_requests %}
+                    {% for request in maintenance_requests %}
+                    <div style="padding: 0.75rem; background-color: var(--card-background-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>{{ request.title }}</strong>
+                            <mark style="background-color: #f1c40f; color: black; font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 10px;">{{ request.status }}</mark>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--muted-color); margin-top: 0.5rem; margin-bottom: 0;">
+                            Submitted {{ request.date_submitted }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: var(--muted-color); font-style: italic; font-size: 0.9rem; text-align: center; margin: 1rem 0;">No active maintenance requests.</p>
+                {% endif %}
+            </article>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- Rental Lease Summary Card -->
+            <article>
+                <h5>Lease Agreement Details</h5>
+                <hr>
+                <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Property:</strong> {{ lease.property_name }}</p>
+                <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Unit:</strong> {{ lease.unit_number }}</p>
+                <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Monthly Rent:</strong> ${{ lease.monthly_rent }}</p>
+                <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Term:</strong> {{ lease.start_date }} – {{ lease.end_date }}</p>
+                <button class="outline" style="width: 100%; margin-top: 1rem; font-size: 0.85rem;">📄 Download Lease Document</button>
+            </article>
+        </div>
+    </div>
+
+{% else %}
+    <!-- ==================== STATE B: NEW REGISTERED USER (NO LEASE) ==================== -->
+    <div style="max-width: 800px; margin: 0 auto;">
+        <article style="text-align: center; padding: 3rem 1.5rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔑</div>
+            <h3>Your Renter Portal is Active!</h3>
+            <p style="color: var(--muted-color); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem;">
+                You have successfully registered your tenant account. Once the landlord assigns you to an apartment unit, your lease details, rent bills, and maintenance options will appear here automatically.
+            </p>
+            
+            <div style="border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 2rem;">
+                <h5>Next Steps to Get Started</h5>
+                <div class="grid" style="margin-top: 1.5rem; text-align: left;">
+                    <div>
+                        <h6>1. Find an Apartment</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Browse our open rentals page to find an available unit that matches your needs.</p>
+                    </div>
+                    <div>
+                        <h6>2. Apply Online</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Once you submit an application, our team will process your details and generate your lease.</p>
+                    </div>
+                    <div>
+                        <h6>3. Keys &amp; Move In</h6>
+                        <p style="font-size: 0.9rem; color: var(--muted-color);">Sign your contract digitally right here to unlock your payment ledger and maintenance tools.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: center;">
+                <a href="/" role="button">Browse Available Units</a>
+                <a href="mailto:leasing@example.com" role="button" class="secondary outline">Contact Leasing Office</a>
+            </div>
+        </article>
+
+        <!-- Keep basic profile info visible so they can confirm details are correct -->
+        <article>
+            <h5 style="margin-bottom: 1rem;">Your Account Details</h5>
+            <div class="grid" style="font-size: 0.95rem;">
+                <div>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email Address:</strong> {{ user.email }}</p>
+                </div>
+                <div>
+                    <p><strong>Contact Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
+                    <p><strong>Primary City:</strong> {{ user.city|default:"Not provided" }}</p>
+                </div>
+            </div>
+        </article>
+    </div>
+{% endif %}
 {% endblock %}
