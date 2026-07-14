@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <h1>Rental Management System</h1>
+            <p class="lead">Choose how you want to access the system.</p>
+        </div>
+
+        <div class="row gy-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Tenant</h5>
+                        <p class="card-text">Login to view your rent payments, maintenance requests, and profile details.</p>
+                        <a href="/login/" class="btn btn-primary">Tenant Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Landlord</h5>
+                        <p class="card-text">Login to manage properties, tenants, payments, and maintenance requests.</p>
+                        <a href="/login/" class="btn btn-primary">Landlord Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Maintenance Staff</h5>
+                        <p class="card-text">Login to view assigned work orders and update maintenance request status.</p>
+                        <a href="/login/" class="btn btn-primary">Maintenance Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Admin</h5>
+                        <p class="card-text">Use the admin panel for full system control, user management, and configuration.</p>
+                        <a href="/admin/" class="btn btn-primary">Admin Panel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 text-center">
+            <p>If you do not yet have an account, <a href="/register/">register here</a>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

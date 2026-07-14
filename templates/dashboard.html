@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Dashboard</h1>
+        <p>Welcome, {{ user.get_full_name|default:user.username }}!</p>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+            </div>
+        </div>
+
+        {% if user.role == 'admin' %}
+            <div class="alert alert-info">You are an admin. Use the <a href="/admin/">Django admin panel</a> for full system control.</div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Properties</h5>
+                        <p class="card-text">Manage or view properties assigned to you.</p>
+                        <a href="/api/properties/" class="btn btn-outline-primary">API Properties</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tenants</h5>
+                        <p class="card-text">View tenant records and leases.</p>
+                        <a href="/api/tenants/" class="btn btn-outline-primary">API Tenants</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Maintenance</h5>
+                        <p class="card-text">Track maintenance requests and work orders.</p>
+                        <a href="/api/maintenance/" class="btn btn-outline-primary">API Maintenance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
