@@ -1,12 +1,127 @@
 {% extends 'base.html' %}
+
 {% block title %}Landlord Dashboard - RMS{% endblock %}
+
 {% block content %}
-<header>
-    <h2>Landlord Control Center 🏛️</h2>
-    <p>Welcome back, {{ user.first_name }} {{ user.last_name }}</p>
+<!-- Dashboard Header -->
+<header style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2 style="margin: 0;">Landlord Control Center</h2>
+        <p style="color: var(--muted-color); margin: 0;">Welcome back, {{ user.first_name }}</p>
+    </div>
+    <div>
+        <span style="background-color: var(--primary); color: white; padding: 0.35rem 0.75rem; border-radius: var(--border-radius); font-size: 0.85rem; font-weight: bold;">
+            Owner Mode
+        </span>
+    </div>
 </header>
-<article>
-    <h5>Property Management Overview</h5>
-    <p>Use this secure panel to upload properties, review tenant applications, and check rent deposits.</p>
-</article>
+
+<!-- 1. Portfolio Overview Section -->
+<section style="margin-bottom: 2rem;">
+    <h4 style="margin-bottom: 1rem;">Portfolio Overview</h4>
+    <div class="grid">
+        <!-- Total Properties Card -->
+        <article style="border-left: 5px solid var(--primary); padding: 1.5rem; margin-bottom: 0;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Total Properties</h6>
+            <h3 style="margin: 0;">{{ properties.count|default:"0" }}</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0; color: var(--muted-color);">Registered buildings</p>
+        </article>
+
+        <!-- Unit Allocation Card -->
+        <article style="border-left: 5px solid #2ecc71; padding: 1.5rem; margin-bottom: 0;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Occupancy Status</h6>
+            <h3 style="margin: 0;">Active Portal</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0; color: var(--muted-color);">Managing units</p>
+        </article>
+
+        <!-- Rent Collected Card -->
+        <article style="border-left: 5px solid #9b59b6; padding: 1.5rem; margin-bottom: 0;">
+            <h6 style="color: var(--muted-color); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">System Ledger</h6>
+            <h3 style="margin: 0;">Online</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0; color: var(--muted-color);">Connected to Payments</p>
+        </article>
+    </div>
+</section>
+
+<!-- 2. Quick Actions Section -->
+<section style="margin-bottom: 3rem;">
+    <article style="background-color: var(--card-background-color); padding: 1.5rem;">
+        <h5 style="margin-bottom: 1rem;">⚡ Quick Operations</h5>
+        <div class="grid" style="margin: 0;">
+            <a href="/properties/add/" role="button" style="width: 100%;">Add New Property</a>
+            <a href="#" role="button" class="secondary" style="width: 100%;">Assign Tenant to Unit</a>
+            <a href="#" role="button" class="outline" style="width: 100%;">Review Maintenance Tickets</a>
+        </div>
+    </article>
+</section>
+
+<!-- 3. Properties List Section -->
+<section>
+    <h4 style="margin-bottom: 1rem;">Properties List</h4>
+    {% if properties %}
+        <div class="grid" style="align-items: start;">
+            {% for property in properties %}
+            <article>
+                <header>
+                    <h4 style="margin: 0;">🏢 {{ property.name }}</h4>
+                    <small style="color: var(--muted-color);">{{ property.address }}, {{ property.city }}</small>
+                </header>
+                
+                <p>{{ property.description|default:"No description provided." }}</p>
+                
+                <hr>
+                
+                <h6>Assigned Units:</h6>
+                {% if property.units.all %}
+                    <table class="striped" style="font-size: 0.85rem;">
+                        <thead>
+                            <tr>
+                                <th>Unit #</th>
+                                <th>Rent</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for unit in property.units.all %}
+                            <tr>
+                                <td><strong>{{ unit.unit_number }}</strong></td>
+                                <!-- FIXED: Changed unit.monthly_rent to unit.rent_amount -->
+                                <td>${{ unit.rent_amount }}</td>
+                                <td>
+                                    <!-- FIXED: Changed logic to check unit.is_available -->
+                                    {% if not unit.is_available %}
+                                        <ins style="color: #2ecc71; text-decoration: none;">Occupied</ins>
+                                    {% else %}
+                                        <mark style="background-color: var(--primary-hover); color: white; padding: 0.1rem 0.4rem; border-radius: var(--border-radius);">Vacant</mark>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p style="font-size: 0.9rem; color: var(--muted-color); font-style: italic;">No units registered for this property yet.</p>
+                {% endif %}
+                
+                <footer>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="#" class="secondary outline" style="font-size: 0.8rem; padding: 0.25rem 0.75rem; flex: 1; text-align: center;">Manage Units</a>
+                        <a href="#" class="outline" style="font-size: 0.8rem; padding: 0.25rem 0.75rem; flex: 1; text-align: center;">Edit Details</a>
+                    </div>
+                </footer>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Onboarding screen for new Landlord with no listings -->
+        <article style="text-align: center; padding: 3rem 1rem;">
+            <span style="font-size: 3rem;">🏢</span>
+            <h3>No Properties Registered</h3>
+            <p style="color: var(--muted-color); max-width: 500px; margin: 0 auto 1.5rem;">
+                To start managing your portfolio, track payments, and accept maintenance requests, create your first property profile.
+            </p>
+            <a href="/properties/add/" role="button">Add Your First Property</a>
+        </article>
+    {% endif %}
+</section>
 {% endblock %}
