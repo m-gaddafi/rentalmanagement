@@ -79,7 +79,7 @@ urlpatterns = [
     path('dashboard/maintenance/', maintenance_dashboard, name='maintenance_dashboard'),
 
     path('api/me/', current_user, name='current_user'),
-    path('api/logout/', logout, name='logout'),
+    path('api/logout/', logout, name='api_logout'),
     
     # API endpoints
     path('api/', include(router.urls)),
