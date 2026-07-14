@@ -19,10 +19,9 @@ urlpatterns = [
     
     # Dashboards
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('dashboard/landlord/', views.landlord_dashboard, name='landlord_dashboard'),
-
-    #  Landlord views routed to properties app logic:
-    path('dashboard/landlord/properties/', property_views.property_list_view, name='landlord_dashboard'),
+    path('dashboard/landlord/', property_views.property_list_view, name='landlord_dashboard'),
+    
+    # Add Property View URL
     path('properties/add/', property_views.add_property_view, name='add_property'),
     
     path('dashboard/maintenance/', views.maintenance_dashboard, name='maintenance_dashboard'),

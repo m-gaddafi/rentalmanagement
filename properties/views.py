@@ -36,6 +36,6 @@ def add_property_view(request):
             total_units=total_units,
             description=description
         )
-        return redirect('/dashboard/landlord/')
+        return redirect('landlord_dashboard')
         
     return render(request, 'properties/add_property.html')
